@@ -38,6 +38,15 @@
     toastTimer = setTimeout(() => { t.hidden = true; }, 1800);
   }
 
+  /** 開視窗：舊的 iOS 沒有 showModal，就退回直接加 open 屬性 */
+  function openDialog(dlg) {
+    if (dlg.open) return;
+    try { dlg.showModal(); } catch (e) { dlg.classList.add('dlg-fallback'); dlg.setAttribute('open', ''); }
+  }
+  function closeDialog(dlg) {
+    try { dlg.close(); } catch (e) { dlg.removeAttribute('open'); }
+  }
+
   const Menu = window.DrinkMenu;
   const Pricing = window.DrinkPricing;
   const Store = window.DrinkStore;
@@ -120,7 +129,7 @@
     $('#dlgItemName').textContent = item.name;
     $('#optNote').value = '';
     renderPick();
-    dlgItem.showModal();
+    openDialog(dlgItem);
   }
 
   function chips(container, options, isOn, onPick) {
@@ -156,11 +165,11 @@
     const same = state.cart.find((l) => l.itemId === line.itemId && l.size === line.size && l.sugar === line.sugar && l.ice === line.ice
       && l.note === line.note && l.toppings.join() === line.toppings.join());
     if (same) same.qty += line.qty; else state.cart.push(line);
-    dlgItem.close();
+    closeDialog(dlgItem);
     renderCart();
     toast(`已加入 ${line.name} ×${line.qty}`);
   });
-  $$('[data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
+  $$('[data-close]').forEach((b) => b.addEventListener('click', () => closeDialog(b.closest('dialog'))));
 
   // ============ 點餐：這一單 ============
   function renderCart() {
@@ -265,7 +274,7 @@
         el('div', { class: 'muted', text: `收現 ${money(order.cash)}　找零 ${money(order.change)}` }),
       ),
     );
-    $('#dlgTicket').showModal();
+    openDialog($('#dlgTicket'));
   }
   $('#btnPrint').addEventListener('click', () => window.print());
 
