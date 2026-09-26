@@ -3,15 +3,14 @@
 飲料店用的點餐／結帳／報表工具。純前端網頁，不用安裝、不用伺服器，
 手機、平板、電腦的瀏覽器開網址就能用。**所有資料只存在該裝置的瀏覽器裡**。
 
-這是一個獨立專案：不依賴任何其他程式碼，整個資料夾搬到哪裡都能用。
+這是一個獨立專案：不依賴任何其他程式碼，沒有任何套件要裝。
 
 ## 啟動方式
 
 - **本機試用**：在這個資料夾裡 `npm start`（或 `python3 -m http.server 8000`），開 `http://localhost:8000/`。
-- **給店裡用（GitHub Pages）**：把這個資料夾放進自己的 repo，到 repo 的 Settings → Pages，
-  Source 選「Deploy from a branch」、分支選 main、資料夾選 `/ (root)`，一兩分鐘後就有網址
-  `https://<帳號>.github.io/<repo 名>/`。手機開這個網址，加到主畫面就像 App。
-- 目前暫時放在 `asaaaa` repo 的 `drink-shop/` 資料夾，網址是 `https://andy-zhang-22.github.io/asaaaa/drink-shop/`。
+- **給店裡用（GitHub Pages）**：到這個 repo 的 Settings → Pages，Source 選「Deploy from a branch」、
+  分支選 `main`、資料夾選 `/ (root)`，存檔後等一兩分鐘，網址是
+  `https://andy-zhang-22.github.io/drink-shop/`。手機開這個網址，加到主畫面就像 App。
 
 ## 測試
 
