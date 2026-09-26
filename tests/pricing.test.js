@@ -26,7 +26,7 @@ function load() {
 const { DrinkMenu, DrinkPricing } = load();
 const menu = DrinkMenu.defaults();
 
-test('菜單：品項 id 不重複，價格都是數字，XL 不會比 L 便宜（特調系列除外，老闆指定）', () => {
+test('菜單：品項 id 不重複，價格都是數字，XL 不會比 L 便宜', () => {
   const ids = new Set();
   for (const cat of menu.categories) {
     for (const it of cat.items) {
@@ -35,7 +35,7 @@ test('菜單：品項 id 不重複，價格都是數字，XL 不會比 L 便宜�
       assert.equal(typeof it.price.L, 'number', `${it.name} 沒有 L 價`);
       if (it.price.XL != null) {
         assert.equal(typeof it.price.XL, 'number');
-        if (cat.id !== 'special') assert.ok(it.price.XL >= it.price.L, `${it.name} 的 XL 比 L 便宜`);
+        assert.ok(it.price.XL >= it.price.L, `${it.name} 的 XL 比 L 便宜`);
       }
     }
   }
@@ -47,8 +47,8 @@ test('菜單：老闆指定的價格', () => {
   menu.categories.forEach((c) => c.items.forEach((i) => { byName[i.name] = i.price; }));
   assert.deepEqual(byName['檸檬烏龍'], { L: 35, XL: 40 });
   assert.deepEqual(byName['青梅烏龍'], { L: 35, XL: 40 });
-  assert.equal(byName['番茄梅'].XL, 40);
-  assert.equal(byName['番茄多多'].XL, 40);
+  assert.deepEqual(byName['番茄梅'], { L: 45, XL: null }, '特調只賣 L');
+  assert.deepEqual(byName['番茄多多'], { L: 55, XL: null }, '特調只賣 L');
   assert.deepEqual(byName['古早味紅茶冰'], { L: 25, XL: 30 });
   assert.deepEqual(byName['鮮奶烏龍'], { L: 50, XL: 55 });
   assert.deepEqual(byName['百香果綠茶'], { L: 50, XL: 55 });

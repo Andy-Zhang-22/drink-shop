@@ -106,8 +106,8 @@
         item('brew-1', '酸梅湯', 40, 45),
       ] },
       { id: 'special', name: '特調系列', items: [
-        item('special-1', '番茄梅', 45, 40, ['新']),
-        item('special-2', '番茄多多', 55, 40, ['新']),
+        item('special-1', '番茄梅', 45, null, ['新']),
+        item('special-2', '番茄多多', 55, null, ['新']),
       ] },
       { id: 'hot', name: '熱飲系列', hot: true, items: [
         item('hot-1', '熱黑糖奶茶', 45, null),
