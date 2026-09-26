@@ -112,8 +112,9 @@
       return;
     }
     const showHeaders = cats.length > 1 || words.length > 0;
+    // 注意：replaceChildren 會把 null 印成「null」文字，所以沒標題時不能塞 null 進去
     wrap.replaceChildren(...cats.flatMap((g) => [
-      showHeaders ? el('h3', { text: g.cat.name }) : null,
+      ...(showHeaders ? [el('h3', { text: g.cat.name })] : []),
       ...g.items.map((it) => itemCard(it, g.cat)),
     ]));
   }
