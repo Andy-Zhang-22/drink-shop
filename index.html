@@ -7,7 +7,7 @@
 <meta name="description" content="飲料店點餐、結帳、製作單、每日營業報表、菜單價格管理。資料只存在本機瀏覽器。">
 <meta name="theme-color" content="#b7412e">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧋</text></svg>">
-<link rel="stylesheet" href="css/app.css?v=20260926-1">
+<link rel="stylesheet" href="css/app.css?v=20260926-2">
 </head>
 <body data-theme="auto">
 
@@ -30,8 +30,11 @@
 <!-- ===== 點餐 ===== -->
 <main id="tab-pos" class="page">
   <div class="pos">
-    <section>
-      <div id="cats" class="cats"></div>
+    <nav id="cats" class="cats" aria-label="系列"></nav>
+    <section class="items-col">
+      <div class="search-wrap">
+        <input id="itemSearch" type="search" placeholder="搜尋品項，例如：檸檬、奶茶、冬瓜" autocomplete="off">
+      </div>
       <div id="items" class="items"></div>
     </section>
     <aside class="cart card" id="cartPanel">
@@ -167,9 +170,9 @@
   </div>
 </dialog>
 
-<script src="js/menu.js?v=20260926-1"></script>
-<script src="js/pricing.js?v=20260926-1"></script>
-<script src="js/store.js?v=20260926-1"></script>
-<script src="js/app.js?v=20260926-1"></script>
+<script src="js/menu.js?v=20260926-2"></script>
+<script src="js/pricing.js?v=20260926-2"></script>
+<script src="js/store.js?v=20260926-2"></script>
+<script src="js/app.js?v=20260926-2"></script>
 </body>
 </html>

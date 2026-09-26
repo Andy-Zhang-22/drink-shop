@@ -45,7 +45,8 @@
   const state = {
     menu: Store.loadMenu(),
     cart: [],
-    cat: null,
+    cat: 'all',
+    query: '',
     reportRange: 'today',
   };
 
@@ -63,31 +64,52 @@
   // ============ 點餐：系列與品項 ============
   function renderCats() {
     const cats = state.menu.categories;
-    if (!cats.some((c) => c.id === state.cat)) state.cat = cats[0] ? cats[0].id : null;
+    if (state.cat !== 'all' && !cats.some((c) => c.id === state.cat)) state.cat = 'all';
     const wrap = $('#cats');
-    wrap.replaceChildren(...cats.map((c) => el('button', {
-      type: 'button', 'aria-selected': String(c.id === state.cat), text: c.name,
-      onclick: () => { state.cat = c.id; renderCats(); renderItems(); },
+    const entries = [{ id: 'all', name: '全部' }, ...cats];
+    wrap.replaceChildren(...entries.map((c) => el('button', {
+      type: 'button', 'aria-selected': String(c.id === state.cat && !state.query), text: c.name,
+      onclick: () => { state.cat = c.id; state.query = ''; $('#itemSearch').value = ''; renderCats(); renderItems(); },
     })));
     $('#shopName').textContent = state.menu.shopName || '飲料店';
     document.title = `${state.menu.shopName || '飲料店'} 點餐系統`;
   }
 
-  function renderItems() {
-    const cat = state.menu.categories.find((c) => c.id === state.cat);
-    const wrap = $('#items');
-    if (!cat) { wrap.replaceChildren(el('p', { class: 'muted', text: '還沒有品項，到「菜單設定」新增。' })); return; }
-    wrap.replaceChildren(...cat.items.map((it) => {
-      const tags = [...(it.tags || []).map((t) => el('span', { class: 'tag tag-' + t, text: t })), it.soldout ? el('span', { class: 'tag tag-售完', text: '售完' }) : null];
-      const price = it.price.XL == null
-        ? el('div', { class: 'price' }, 'L ', el('b', { text: it.price.L }))
-        : el('div', { class: 'price' }, 'L ', el('b', { text: it.price.L }), '　XL ', el('b', { text: it.price.XL }));
-      return el('button', {
-        type: 'button', class: 'item' + (it.soldout ? ' soldout' : ''), disabled: !!it.soldout,
-        onclick: () => openItem(it, cat),
-      }, el('div', { class: 'name' }, tags, it.name), price);
-    }));
+  function itemCard(it, cat) {
+    const tags = [...(it.tags || []).map((t) => el('span', { class: 'tag tag-' + t, text: t })), it.soldout ? el('span', { class: 'tag tag-售完', text: '售完' }) : null];
+    const price = it.price.XL == null
+      ? el('div', { class: 'price' }, 'L ', el('b', { text: it.price.L }))
+      : el('div', { class: 'price' }, 'L ', el('b', { text: it.price.L }), '　XL ', el('b', { text: it.price.XL }));
+    return el('button', {
+      type: 'button', class: 'item' + (it.soldout ? ' soldout' : ''), disabled: !!it.soldout,
+      onclick: () => openItem(it, cat),
+    }, el('div', { class: 'name' }, tags, it.name), price);
   }
+
+  /**
+   * 品項區：「全部」或有搜尋字時，所有系列分區列出（每區一個標題）；選了某個系列就只列那一區。
+   * 搜尋用空白分隔可以多個關鍵字交集，例如「檸檬 冬瓜」。
+   */
+  function renderItems() {
+    const wrap = $('#items');
+    const words = state.query.toLowerCase().split(/\s+/).filter(Boolean);
+    const match = (it, cat) => words.every((w) => (it.name + cat.name).toLowerCase().includes(w));
+    const cats = state.menu.categories
+      .filter((c) => words.length || state.cat === 'all' || c.id === state.cat)
+      .map((c) => ({ cat: c, items: c.items.filter((it) => match(it, c)) }))
+      .filter((g) => g.items.length);
+    if (!cats.length) {
+      wrap.replaceChildren(el('div', { class: 'empty', text: words.length ? `找不到「${state.query}」` : '還沒有品項，到「菜單設定」新增。' }));
+      return;
+    }
+    const showHeaders = cats.length > 1 || words.length > 0;
+    wrap.replaceChildren(...cats.flatMap((g) => [
+      showHeaders ? el('h3', { text: g.cat.name }) : null,
+      ...g.items.map((it) => itemCard(it, g.cat)),
+    ]));
+  }
+  $('#itemSearch').addEventListener('input', (e) => { state.query = e.target.value.trim(); renderCats(); renderItems(); });
+  $('#itemSearch').addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.target.value = ''; state.query = ''; renderCats(); renderItems(); } });
 
   // ============ 點餐：選規格 ============
   const dlgItem = $('#dlgItem');

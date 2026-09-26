@@ -98,14 +98,20 @@ input[type="number"] { -moz-appearance: textfield; }
 .field > span { color: var(--muted); font-size: 12px; }
 
 /* ---------- 點餐 ---------- */
-.pos { display: grid; grid-template-columns: 1fr 360px; gap: 12px; align-items: start; }
+.pos { display: grid; grid-template-columns: 150px 1fr 360px; gap: 12px; align-items: start; }
 .pos > * { min-width: 0; }
-.cats { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 8px; scrollbar-width: thin; position: sticky; top: 52px; background: var(--bg); z-index: 5; }
+/* 系列：電腦版左側直排，一次全看到，不用左右滑 */
+.cats { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 62px; }
 .cats button {
-  flex: 0 0 auto; border: 1px solid var(--border); background: var(--surface); padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); padding: 10px 14px; border-radius: 10px; cursor: pointer; text-align: left; font-size: 15px;
 }
 .cats button[aria-selected="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
-.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.search-wrap { margin-bottom: 10px; }
+.search-wrap input { padding: 11px 14px; border-radius: 10px; font-size: 16px; }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+.items h3 { grid-column: 1 / -1; font-size: 15px; color: var(--muted); margin: 10px 0 0; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.items h3:first-child { margin-top: 0; }
+.items .empty { grid-column: 1 / -1; color: var(--muted); text-align: center; padding: 30px 0; }
 .item {
   display: flex; flex-direction: column; gap: 4px; text-align: left;
   border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 12px; cursor: pointer; min-height: 84px;
@@ -138,6 +144,10 @@ input[type="number"] { -moz-appearance: textfield; }
 
 @media (max-width: 900px) {
   .pos { grid-template-columns: 1fr; }
+  /* 手機：系列改成多排的小膠囊，全部看得到 */
+  .cats { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .cats button { padding: 7px 12px; border-radius: 999px; font-size: 14px; }
+  .items { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
   .cart { position: static; }
   .cart-bar {
     position: fixed; left: 8px; right: 8px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 25;
